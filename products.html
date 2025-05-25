@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="km">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ហាងលក់ទូរសព្ទ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>ហាងលក់ទូរសព្ទ</h1>
+        <div id="userGreeting"></div>
+        <nav>
+            <ul>
+                <li><a href="#">ទំព័រដើម</a></li>
+                <li><a href="#products">ផលិតផល</a></li>
+                <li><a href="#cart">រទេះទំនិញ</a></li>
+                <li><a href="#checkout">បង់ប្រាក់</a></li>
+                <li><a href="#orderHistory">ប្រវត្តិកម្មង់</a></li>
+                <li><a href="#auth">ចូល/ចុះឈ្មោះ</a></li>
+                <li><a href="#" onclick="logout()">ចាកចេញ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>ស្វាគមន៍មកកាន់ហាងលក់ទូរសព្ទ!</h2>
+    </section>
+
+    <section class="products" id="products">
+        <h2>ផលិតផលរបស់យើង</h2>
+        <div class="product-slider" id="productSlider"></div>
+    </section>
+
+    <section class="cart" id="cart">
+        <h2>រទេះទំនិញ</h2>
+        <div id="cartItems"></div>
+        <p id="totalPrice">តម្លៃសរុប: $0</p>
+    </section>
+
+    <section class="checkout" id="checkout">
+        <h2>ទំព័របង់ប្រាក់</h2>
+        <p>សូមពិនិត្យព័ត៌មានរទេះទំនិញរបស់អ្នក មុនពេលបញ្ជាក់ការបង់ប្រាក់។</p>
+        <button onclick="checkout()">បង់ប្រាក់</button>
+    </section>
+
+    <section class="order-history" id="orderHistory">
+        <h2>ប្រវត្តិការកម្មង់</h2>
+        <div id="orderList"></div>
+    </section>
+
+    <section class="auth" id="auth">
+        <h2>ចូលគណនី</h2>
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id="username" placeholder="ឈ្មោះអ្នកប្រើ" required>
+            <input type="password" id="password" placeholder="ពាក្យសម្ងាត់" required>
+            <button type="submit">ចូល</button>
+        </form>
+        <h2>ចុះឈ្មោះគណនីថ្មី</h2>
+        <form onsubmit="event.preventDefault(); handleRegister(document.getElementById('regUsername').value, document.getElementById('regPassword').value)">
+            <input type="text" id="regUsername" placeholder="ឈ្មោះអ្នកប្រើថ្មី" required>
+            <input type="password" id="regPassword" placeholder="ពាក្យសម្ងាត់ថ្មី" required>
+            <button type="submit">ចុះឈ្មោះ</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>រក្សាសិទ្ធិគ្រប់យ៉ាង &copy; 2025 ហាងលក់ទូរសព្ទ</p>
+    </footer>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+        const productData = [
+            { name: 'Galaxy S24', price: 799, img: 'https://images.samsung.com/is/image/samsung/p6pim/kh/2402/gallery/kh-galaxy-s24-s921-sm-s921bzyexme-thumb-539642247' },
+            { name: 'iPhone 15 Pro', price: 999, img: 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro.jpg' },
+            { name: 'Xiaomi 14', price: 699, img: 'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14.jpg' },
+            { name: 'Pixel 8', price: 799, img: 'https://fdn2.gsmarena.com/vv/bigpic/google-pixel8.jpg' },
+            { name: 'OnePlus 12', price: 749, img: 'https://fdn2.gsmarena.com/vv/bigpic/oneplus-12.jpg' }
+        ];
+
+        function updateUserGreeting() {
+            const greeting = document.getElementById('userGreeting');
+            greeting.textContent = currentUser ? `សួស្តី ${currentUser.username}!` : '';
+        }
+
+        function addToCart(productName, price) {
+            cart.push({ name: productName, price: price });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function displayCart() {
+            const cartItems = document.getElementById('cartItems');
+            const totalPriceEl = document.getElementById('totalPrice');
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItems.innerHTML += `<div class="cart-item">${item.name} - $${item.price} <button onclick="removeFromCart(${index})">លុប</button></div>`;
+            });
+            totalPriceEl.textContent = `តម្លៃសរុប: $${total}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                currentUser = user;
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                alert(`សួស្តី ${username}, អ្នកបានចូលជោគជ័យ!`);
+                updateUserGreeting();
+                displayOrderHistory();
+            } else {
+                alert("ឈ្មោះអ្នកប្រើ ឬ ពាក្យសម្ងាត់មិនត្រឹមត្រូវ!");
+            }
+        }
+
+        function handleRegister(username, password) {
+            if (users.find(u => u.username === username)) {
+                alert("អ្នកប្រើនេះមានរួចហើយ!");
+                return;
+            }
+            const newUser = { username, password };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            alert("ចុះឈ្មោះជោគជ័យ!");
+        }
+
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            currentUser = null;
+            alert("អ្នកបានចាកចេញជោគជ័យ!");
+            updateUserGreeting();
+        }
+
+        function checkout() {
+            if (!currentUser) {
+                alert("សូមចូលគណនីមុនបង់ប្រាក់!");
+                return;
+            }
+            if (cart.length === 0) {
+                alert("រទេះទំនិញទទេ!");
+                return;
+            }
+
+            const order = {
+                username: currentUser.username,
+                items: [...cart],
+                timestamp: new Date().toLocaleString()
+            };
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            alert("ការបង់ប្រាក់បានជោគជ័យ សូមអរគុណ!");
+            cart.length = 0;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+            displayOrderHistory();
+        }
+
+        function displayOrderHistory() {
+            const orderList = document.getElementById('orderList');
+            orderList.innerHTML = '';
+
+            if (!currentUser) {
+                orderList.innerHTML = "<p>សូមចូលគណនីដើម្បីមើលប្រវត្តិការកម្មង់របស់អ្នក។</p>";
+                return;
+            }
+
+            const userOrders = orders.filter(order => order.username === currentUser.username);
+
+            if (userOrders.length === 0) {
+                orderList.innerHTML = "<p>មិនមានប្រវត្តិការកម្មង់។</p>";
+                return;
+            }
+
+            userOrders.forEach(order => {
+                const orderDiv = document.createElement('div');
+                orderDiv.style.borderBottom = '1px solid #ccc';
+                orderDiv.style.marginBottom = '1rem';
+                orderDiv.innerHTML = `
+                    <strong>ថ្ងៃបង់ប្រាក់៖</strong> ${order.timestamp}<br>
+                    <strong>ទំនិញ:</strong>
+                    <ul>
+                        ${order.items.map(item => `<li>${item.name} - $${item.price}</li>`).join('')}
+                    </ul>
+                `;
+                orderList.appendChild(orderDiv);
+            });
+        }
+
+        function renderProducts() {
+            const slider = document.getElementById('productSlider');
+            productData.forEach(p => {
+                const product = document.createElement('div');
+                product.className = 'product';
+                product.innerHTML = `
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <p>$${p.price}</p>
+                    <button onclick="addToCart('${p.name}', ${p.price})">ដាក់ចូលរទេះ</button>
+                `;
+                slider.appendChild(product);
+            });
+        }
+
+        window.addEventListener('load', () => {
+            displayCart();
+            updateUserGreeting();
+            renderProducts();
+            displayOrderHistory();
+        });
+    </script>
+</body>
+
+</html>

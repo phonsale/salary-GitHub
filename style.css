@@ -1,0 +1,132 @@
+body {
+            font-family: 'Khmer OS Battambang', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #1e88e5;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: url('https://via.placeholder.com/1200x400?text=Welcome+to+Phone+Shop') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 5rem 1rem;
+        }
+
+        .products {
+            padding: 2rem;
+            background-color: white;
+        }
+
+        .product-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 2rem;
+            padding-bottom: 1rem;
+        }
+
+        .product-slider::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .product-slider::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .product {
+            background-color: #fafafa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            width: 200px;
+            flex: 0 0 auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .product button {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .about, .contact, .cart, .auth, .checkout, .order-history {
+            padding: 2rem;
+            background-color: white;
+            margin: 1rem auto;
+            max-width: 900px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        input, textarea {
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button[type="submit"], .auth button {
+            background-color: #43a047;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+
+        #userGreeting {
+            font-weight: bold;
+            margin-top: 1rem;
+        }
